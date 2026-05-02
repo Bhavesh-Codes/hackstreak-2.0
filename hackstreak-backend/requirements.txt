@@ -1,0 +1,10 @@
+fastapi[standard]
+uvicorn[standard]
+sqlalchemy
+python-jose
+passlib==1.7.4
+bcrypt==3.2.2
+python-dotenv
+psycopg[binary]
+geoalchemy2
+qrcode[pil]
