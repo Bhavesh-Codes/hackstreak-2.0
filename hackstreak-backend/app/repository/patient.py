@@ -25,7 +25,7 @@ def create_patients(request: PatientCreate, db: Session):
 
 def get_patients(id: UUID, db: Session):
 
-    patient = db.query(Patient).filter(Patient.id == id).first()
+    patient = db.query(Patient).filter(Patient.id == str(id)).first()
 
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
@@ -41,7 +41,7 @@ def get_all_patient(db: Session):
 
 def update_patients(id: UUID, request: PatientCreate, db: Session):
 
-    patient = db.query(Patient).filter(Patient.id == id).first()
+    patient = db.query(Patient).filter(Patient.id == str(id)).first()
 
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
@@ -61,7 +61,7 @@ def update_patients(id: UUID, request: PatientCreate, db: Session):
 
 def delete_patients(id: UUID, db: Session):
 
-    patient = db.query(Patient).filter(Patient.id == id).first()
+    patient = db.query(Patient).filter(Patient.id == str(id)).first()
 
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
@@ -109,13 +109,13 @@ def location_summary(db: Session):
 
 def create_visit(patient_id, request, db: Session):
 
-    patient = db.query(Patient).filter(Patient.id == patient_id).first()
+    patient = db.query(Patient).filter(Patient.id == str(patient_id)).first()
 
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
 
     new_visit = PatientVisit(
-        patient_id=patient_id,
+        patient_id=str(patient_id),
         doctor=request.doctor,
         disease=request.disease,
         prescription=request.prescription,
@@ -132,14 +132,14 @@ def create_visit(patient_id, request, db: Session):
 
 def get_patient_visits(patient_id, db: Session):
 
-    patient = db.query(Patient).filter(Patient.id == patient_id).first()
+    patient = db.query(Patient).filter(Patient.id == str(patient_id)).first()
 
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")
 
     visits = (
         db.query(PatientVisit)
-        .filter(PatientVisit.patient_id == patient_id)
+        .filter(PatientVisit.patient_id == str(patient_id))
         .order_by(PatientVisit.visit_time.desc())
         .all()
     )

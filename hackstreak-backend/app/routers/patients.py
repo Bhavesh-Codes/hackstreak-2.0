@@ -18,7 +18,7 @@ router = APIRouter(
 @router.get("/{patient_id}/qr")
 def get_patient_qr(patient_id: UUID, db: Session = Depends(get_db)):
     
-    patient = db.query(Patient).filter(Patient.id == patient_id).first()
+    patient = db.query(Patient).filter(Patient.id == str(patient_id)).first()
 
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")

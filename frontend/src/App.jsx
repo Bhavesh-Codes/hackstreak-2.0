@@ -1,34 +1,37 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Home from './pages/Home';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import { AppShell } from './components/AppShell';
 import Login from './pages/Login';
+import RegisterStaff from './pages/RegisterStaff';
+import Dashboard from './pages/Dashboard';
+import Patients from './pages/Patients';
 import RegisterPatient from './pages/RegisterPatient';
 import PatientDetail from './pages/PatientDetail';
+import ScanHealthCard from './pages/ScanHealthCard';
 import Analytics from './pages/Analytics';
-import Register from './pages/Register';
 
-const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('token');
-  return token ? children : <Navigate to="/login" />;
-};
+const router = createBrowserRouter([
+  { path: '/login', element: <Login /> },
+  { path: '/register-staff', element: <RegisterStaff /> },
+  {
+    element: <AppShell />,
+    children: [
+      { index: true, element: <Dashboard /> },
+      { path: 'patients', element: <Patients /> },
+      { path: 'register', element: <RegisterPatient /> },
+      { path: 'patient/:id', element: <PatientDetail /> },
+      { path: 'scan', element: <ScanHealthCard /> },
+      { path: 'analytics', element: <Analytics /> },
+    ],
+  },
+]);
 
 function App() {
   return (
-    <Router>
-      <div className="app-layout">
-        <Navbar />
-        <main className="container animate-fade-in">
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register-staff" element={<Register />} />
-            <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-            <Route path="/register" element={<ProtectedRoute><RegisterPatient /></ProtectedRoute>} />
-            <Route path="/patient/:id" element={<ProtectedRoute><PatientDetail /></ProtectedRoute>} />
-            <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   );
 }
 
